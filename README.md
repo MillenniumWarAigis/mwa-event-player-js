@@ -1,7 +1,5 @@
 # MILLENNIUM WAR AIGIS EVENT PLAYER [JS]
 
-[toc]
-
 ## Introduction
 
 A simple webapp to play back events from the Nutaku version of the game, using the resource files posted on the Wikia.
@@ -39,26 +37,26 @@ To specify which event to play, either use the file upload input control or drag
 - Resources can be precached by prefixing `precache` in front of their name. e.g.:
 
 > // precache resources
-  #precache-sfx beep.wav
-  #precache-sfx boop.wav
+>  #precache-sfx beep.wav
+>  #precache-sfx boop.wav
   
 >  @Robot
-  #sfx <0>
-  #sfx <1>
-  Beep... Boop... Beep.
+>  #sfx <0>
+>  #sfx <1>
+>  Beep... Boop... Beep.
 
 - Resource indices can be used instead of URI's. e.g.:
 
 > // queue the first registered sound effect resource.
-  #sfx <0>
-  // queue the second registered sound effect resource.
-  #sfx <1>
+>  #sfx <0>
+>  // queue the second registered sound effect resource.
+>  #sfx <1>
 
 - Use `<-1>` to reset a resource to its default state. e.g.:
 
 > // stop any music.
-  #music <-1>
-  // stop any voice.
-  #voice <-1>
-  // stop any sound effect.
-  #sfx <-1>
+>  #music <-1>
+>  // stop any voice.
+>  #voice <-1>
+>  // stop any sound effect.
+>  #sfx <-1>
