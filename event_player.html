@@ -1,0 +1,2082 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Millennnium War Aigis</title>
+
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+
+		body {
+			vertical-align: middle;
+			background-color: rgb(245,245,245);
+		}
+
+		.container {
+			width: 960px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			margin: auto auto;
+			padding-top: 20px;
+		}
+
+		#mainContainer {
+		}
+
+		.modal {
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1050;
+			display: none;
+			overflow: hidden;
+			outline: 0;
+			margin: auto auto;
+		}
+
+			.modal[data-state="open"] {
+				overflow-x: hidden;
+				overflow-y: auto;
+				display: block;
+			}
+
+			.modal[data-state="closed"] {
+			}
+
+		.modal-dialog {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 60%;
+			height: 80%;
+			background-color: white;
+			-webkit-background-clip: padding-box;
+			background-clip: padding-box;
+			border-radius: 6px;
+			outline: 0;
+			box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+		}
+
+		.modal-content {
+			position: relative;
+			padding: 10px;
+		}
+
+		.modal-header {
+			background-color: rgb(0,27,73);
+			user-select: none;
+		}
+
+			.modal-header ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				background-image: linear-gradient(0deg, rgb(0,27,73) 10%, rgb(0,27,73) 20%, rgb(9,54,109) 80%, rgb(0,54,127) 100%);
+				border-radius: 6px;
+			}
+
+			.modal-header li {
+				float: left;
+			}
+
+				.modal-header li.right {
+					float: right;
+				}
+
+				.modal-header li button {
+					display: block;
+					color: white;
+					text-align: center;
+					padding: 14px 16px;
+					text-decoration: none;
+					transition: all .1s linear;
+					background: inherit;
+					border: 3px ridge transparent;
+					border-radius: 6px;
+					box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+					cursor: pointer;
+				}
+
+				.modal-header li:hover button {
+					border-color: gold;
+					background-color: rgb(0,54,127);
+				}
+
+		.backdrop {
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1040;
+			background-color: black;
+		}
+
+			.backdrop.fade {
+				filter: alpha(opacity=0);
+				opacity: 0;
+				display: none;
+				transition: opacity .2s linear;
+			}
+
+				.backdrop.fade.in {
+					filter: alpha(opacity=50);
+					opacity: .5;
+					display: inline;
+					transition: opacity .2s linear;
+				}
+
+		.frontdrop {
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1100;
+			background-color: black;
+		}
+
+			.frontdrop.fade {
+				filter: alpha(opacity=0);
+				opacity: 0;
+				display: none;
+				transition: opacity .2s ease-in-out;
+			}
+
+				.frontdrop.fade.in {
+					filter: alpha(opacity=100);
+					opacity: 1;
+					display: inline;
+					transition: opacity .2s ease-in-out;
+				}
+
+		#bg-container {
+			background-color: black;
+			user-select: none;
+		}
+
+		#bg {
+			display: block;
+			min-height: 640px;
+			-webkit-user-drag: none;
+			-khtml-user-drag: none;
+			-moz-user-drag: none;
+			-o-user-drag: none;
+			user-drag: none;
+		}
+
+			#bg.fade {
+				filter: alpha(opacity=0);
+				opacity: 0;
+				transition: opacity .5s ease-out;
+			}
+
+		#box.fade {
+			filter: alpha(opacity=0);
+			opacity: 0;
+			transition: opacity .5s ease-out;
+		}
+
+		#bg.fade.in {
+			filter: alpha(opacity=100);
+			opacity: 1;
+			transition: opacity .5s ease-out;
+		}
+
+		#box.fade.in {
+			filter: alpha(opacity=100);
+			opacity: 1;
+			transition: opacity .5s ease-out;
+		}
+
+		#box {
+			pointer-events: none;
+			text-align: left;
+			position: relative;
+			bottom: 150px;
+			height: 150px;
+			padding-left: 44px;
+			padding-right: 44px;
+			padding-top: 0;
+			padding-bottom: 0;
+			background-color: transparent;
+			background-image: linear-gradient(0deg, rgba(0,0,0,.8) 140px, rgba(0,0,0,.8) 140px, rgba(0,0,0,0) 150px);
+			filter: alpha(0);
+			opacity: 0;
+			overflow: hidden;
+		}
+
+		.vspacing {
+			height: 10px;
+		}
+
+		.speaker {
+			display: block;
+			color: white;
+			font-weight: bold;
+			font-size: 2em;
+			user-select: none;
+		}
+
+			.speaker.custom[data-speaker-index="0"] {
+				color: Pink;
+			}
+
+			.speaker.custom[data-speaker-index="1"] {
+				color: Orange;
+			}
+
+			.speaker.custom[data-speaker-index="2"] {
+				color: HotPink;
+			}
+
+			.speaker.custom[data-speaker-index="3"] {
+				color: DeepPink;
+			}
+
+		.text {
+			color: white;
+			font-weight: bold;
+			font-size: 1.7em;
+			vertical-align: top;
+			user-select: none;
+		}
+
+			.text[data-speaker-index="-1"] {
+				font-style: italic;
+				quotes: none;
+			}
+
+			.text[data-quotes="none"] {
+				quotes: none;
+			}
+
+		#menuButton {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 54px;
+			height: 54px;
+			margin-top: 40px;
+			margin-left: 20px;
+			outline: 0;
+			border: 0;
+			border-radius: 50%;
+			box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+			text-align: center;
+			vertical-align: middle;
+			background-color: pink;
+			background-image: radial-gradient(circle farthest-corner at top left, rgb(255,190,215), rgb(250,55,130));
+			-webkit-background-clip: padding-box;
+			background-clip: padding-box;
+			overflow: hidden;
+			cursor: pointer;
+		}
+
+			#menuButton span {
+				display: inline-block;
+				text-transform: uppercase;
+				text-shadow: 1px 1px 1px red;
+				font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+				font-weight: bolder;
+				color: white;
+				user-select: none;
+			}
+
+			#menuButton:hover span {
+			}
+
+			#menuButton.custom {
+				filter: alpha(50);
+				opacity: .5;
+				transition: opacity .2s ease-out;
+			}
+
+				#menuButton.custom:hover {
+					filter: alpha(100);
+					opacity: 1;
+				}
+
+				#menuButton.custom:active {
+					transform: scale(0.9);
+					background-color: rgb(250,55,130);
+					background-image: radial-gradient(circle farthest-corner, rgb(250,55,130), rgb(255,190,215));
+				}
+
+		.panel {
+			user-select: none;
+		}
+
+		#sceneFileInput {
+		}
+
+		#inputContainer {
+			margin: 10px;
+		}
+
+		#galleryPanel {
+		}
+
+		#textDumpPanel {
+		}
+
+		#textDumpContainer {
+			text-align: center;
+		}
+
+		#textDump {
+		}
+
+			#textDump ol {
+				padding: 0;
+				list-style-type: none;
+			}
+
+				#textDump ol li {
+					padding: 10px;
+				}
+
+				#textDump ol .speaker {
+					font-size: 1em;
+				}
+
+				#textDump ol .text {
+					font-size: 1em;
+					font-weight: normal;
+					color: black;
+				}
+
+		#optionsPanel {
+		}
+
+			#optionsPanel fieldset {
+				border-radius: 5px;
+				margin: 0;
+				border: 0;
+				user-select: none;
+				background-color: white;
+			}
+
+				#optionsPanel fieldset legend {
+					pointer-events: none;
+					font-weight: bold;
+					font-size: 1.2em;
+					color: rgb(0,27,73);
+					background-color: rgb(0,27,73);
+					background-image: linear-gradient(0deg, rgb(0,27,73) 10%, rgb(0,27,73) 20%, rgb(9,54,109) 80%, rgb(0,54,127) 100%);
+					-webkit-background-clip: text;
+					background-clip: text;
+					-webkit-text-fill-color: transparent;
+					text-fill-color: transparent;
+				}
+
+				#optionsPanel fieldset ul {
+					border-radius: 6px;
+					list-style-type: none;
+					margin: 0;
+					padding: 0;
+					vertical-align: middle;
+				}
+
+					#optionsPanel fieldset ul li {
+						display: inline-block;
+						margin: 5px;
+						border-radius: 6px;
+						border: 3px ridge white;
+						background-color: rgb(0,27,73);
+						background-image: linear-gradient(0deg, rgb(0,27,73) 10%, rgb(0,27,73) 20%, rgb(9,54,109) 80%, rgb(0,54,127) 100%);
+						color: white;
+						padding: 2px;
+						transition: border .15s linear;
+						text-shadow: 1px 1px 1px black;
+						box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+						vertical-align: middle;
+						padding: 0;
+					}
+
+						#optionsPanel fieldset ul li:active {
+							transform: scale(0.98);
+						}
+
+						#optionsPanel fieldset ul li:hover,
+						#optionsPanel fieldset ul li button:hover {
+							border-color: gold;
+							background-color: rgb(0,54,127);
+						}
+
+						#optionsPanel fieldset ul li label,
+						#optionsPanel fieldset ul li button span {
+							padding-left: 20px;
+							padding-right: 20px;
+						}
+
+						#optionsPanel fieldset ul li button:active {
+							transform: scale(0.98);
+						}
+
+						#optionsPanel fieldset ul li button {
+							border: 0;
+							background-color: inherit;
+							color: white;
+							padding: 2px;
+							cursor: pointer;
+						}
+
+						#optionsPanel fieldset ul li input[type="text"] {
+							min-width: 400px;
+						}
+
+							#optionsPanel fieldset ul li input[type="text"] + label,
+							#optionsPanel fieldset ul li input[type="radio"] + label,
+							#optionsPanel fieldset ul li input[type="color"] + label {
+								display: inline-block;
+								min-width: 100px;
+								cursor: pointer;
+							}
+
+						#optionsPanel fieldset ul li input[type="range"] {
+							vertical-align: middle;
+						}
+
+						#optionsPanel fieldset ul li input[type="radio"] {
+							display: inline-block;
+							position: relative;
+							height: 1em;
+							width: 1em;
+							margin-right: 0;
+							border: 0;
+							border-radius: 50%;
+							background-color: inherit;
+							border: 2px ridge white;
+							-webkit-appearance: none;
+							/*outline: 0;*/
+						}
+
+							#optionsPanel fieldset ul li input[type="radio"]:after {
+								display: block;
+								position: relative;
+								top: .1em;
+								left: .1em;
+								height: 0.5em;
+								width: 0.5em;
+								border-radius: 50%;
+								content: '';
+							}
+
+							#optionsPanel fieldset ul li input[type="radio"]:checked {
+								border-color: gold;
+							}
+
+								#optionsPanel fieldset ul li input[type="radio"]:checked:after {
+									background-color: gold;
+								}
+
+		.dedicatedTo {
+			text-align: center;
+		}
+
+			.dedicatedTo blockquote {
+				margin-top: 0;
+			}
+
+				.dedicatedTo blockquote q {
+					font-style: italic;
+					font-size: 1.2em;
+				}
+
+				.dedicatedTo blockquote .header {
+					font-size: 7em;
+					font-weight: bold;
+					display: block;
+				}
+
+				.dedicatedTo blockquote .footer {
+					filter: alpha(50);
+					opacity: 0.5;
+				}
+
+			.dedicatedTo .poster {
+				width: 320px;
+			}
+
+		/* generics */
+		.right {
+			float: right !important;
+		}
+
+		.center {
+			text-align: center !important;
+		}
+
+		.invisible {
+			/*visibility: hidden;*/
+			filter: alpha(0) !important;
+			opacity: 0 !important;
+			transition: opacity .15s linear;
+		}
+
+		.hidden {
+			display: none !important;
+		}
+
+		.br {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<div class="backdrop"></div>
+
+	<div class="modal modal-dialog" id="mainModal">
+		<div class="modal-header">
+			<ul>
+				<li><button id="showGalleryButton" type="button" class="hidden">Scene</button></li>
+				<li><button id="showTextDumpButton" type="button">Conversation Log</button></li>
+				<li><button id="toggleUiButton" type="button">Show Background</button></li>
+				<li class="right"><button id="showHelpButton" type="button">?</button></li>
+				<li class="right"><button id="showOptionsButton" type="button">Options</button></li>
+			</ul>
+		</div>
+		<div class="modal-content">
+			<div id="galleryPanel" class="panel gallery hidden">
+				<div id="scenes">
+				</div>
+			</div>
+			<div id="textDumpPanel" class="panel log">
+				<div id="inputContainer">
+					<input id="sceneFileInput" type="file" accept="text/plain">
+				</div>
+				<blockquote><div id="rawTextDump"></div><div id="textDumpContainer"><div id="textDump"></div></div></blockquote>
+			</div>
+			<div id="optionsPanel" class="panel options hidden">
+				<fieldset class="center">
+					<ul>
+						<li><button type="button" id="loadSettingsButton"><span>Load</span></button></li>
+						<li><button type="button" id="saveSettingsButton"><span>Save</span></button></li>
+						<li><button type="button" id="resetSettingsButton"><span>Reset</span></button></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Paths</legend>
+					<ul>
+						<li><input type="text" name="backgroundPath" id="backgroundPath" /><label for="backgroundPath">CG Path</label></li>
+						<li><input type="text" name="musicPath" id="musicPath" /><label for="musicPath">BGM Path</label></li>
+						<li><input type="text" name="voicePath" id="voicePath" /><label for="voicePath">Voice Path</label></li>
+						<li><input type="text" name="sfxPath" id="sfxPath" /><label for="sfxPath">SFX Path</label></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Background Music</legend>
+					<ul>
+						<li><input type="radio" name="bgm" id="bgmOff" value="0" /><label for="bgmOff">Off</label></li>
+						<li><input type="radio" name="bgm" id="bgmOn" value="1" /><label for="bgmOn">On</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Voice</legend>
+					<ul>
+						<li><input type="radio" name="voice" id="voiceOff" value="0" /><label for="voiceOff">Off</label></li>
+						<li><input type="radio" name="voice" id="voiceOn" value="1" /><label for="voiceOn">On</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Sound Effects</legend>
+					<ul>
+						<li><input type="radio" name="sfx" id="sfxOff" value="0" /><label for="sfxOff">Off</label></li>
+						<li><input type="radio" name="sfx" id="sfxOn" value="1" /><label for="sfxOn">On</label></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Autoplay</legend>
+					<ul>
+						<li><input type="radio" name="autoplay" id="autoplayClassic" value="classic" /><label for="autoplayClassic">Off</label></li>
+						<li><input type="radio" name="autoplay" id="autoplayUtterance" value="utterance" /><label for="autoplayUtterance">Utterance</label></li>
+						<li><input type="radio" name="autoplay" id="autoplayCharacter" value="char" /><label for="autoplayCharacter">Animated</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Autoplay Speed</legend>
+					<ul>
+						<li><input type="radio" name="autoplaySpeed" id="autoplaySpeedSlow" value="1" /><label for="autoplaySpeedSlow">Slow</label></li>
+						<li><input type="radio" name="autoplaySpeed" id="autoplaySpeedMedium" value="2" /><label for="autoplaySpeedMedium">Medium</label></li>
+						<li><input type="radio" name="autoplaySpeed" id="autoplaySpeedFast" value="3" /><label for="autoplaySpeedFast">Fast</label></li>
+						<li><input type="radio" name="autoplaySpeed" id="autoplaySpeedUltra" value="4" /><label for="autoplaySpeedUltra">Very Fast</label></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Line breaks</legend>
+					<ul>
+						<li><input type="radio" name="linebreaks" id="lineBreaksClassic" value="1" /><label for="lineBreaksClassic">Classic</label></li>
+						<li><input type="radio" name="linebreaks" id="lineBreaksModern" value="0" /><label for="lineBreaksModern">Modern</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Quotes</legend>
+					<ul>
+						<li><input type="radio" name="quotes" id="quotesClassic" value="1" /><label for="quotesClassic">Classic</label></li>
+						<li><input type="radio" name="quotes" id="quotesModern" value="0" /><label for="quotesModern">Modern</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Speaker</legend>
+					<ul>
+						<li><input type="radio" name="speaker" id="speakerClassic" value="1" /><label for="speakerClassic">Classic</label></li>
+						<li><input type="radio" name="speaker" id="speakerModern" value="0" /><label for="speakerModern">Modern</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>User Interface</legend>
+					<ul>
+						<li><input type="radio" name="menuButton" id="menuButtonClassic" value="1" /><label for="menuButtonClassic">Classic</label></li>
+						<li><input type="radio" name="menuButton" id="menuButtonModern" value="0" /><label for="menuButtonModern">Modern</label></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Conversation Log</legend>
+					<ul>
+						<li><input type="radio" name="conversationLog" id="conversationLogClassic" value="1" /><label for="conversationLogClassic">Plain</label></li>
+						<li><input type="radio" name="conversationLog" id="conversationLogModern" value="0" /><label for="conversationLogModern">Formatted</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Parser</legend>
+					<ul>
+						<li><input type="radio" name="parser" id="parserClassic" value="1" /><label for="parserClassic">Classic</label></li>
+						<li><input type="radio" name="parser" id="parserModern" value="0" /><label for="parserModern">Extended</label></li>
+					</ul>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<legend>Background</legend>
+					<ul>
+						<li><input type="color" name="backgroundColor" id="backgroundColor" value="#ffffff" /><label for="backgroundColor">Color</label></li>
+					</ul>
+				</fieldset>
+				<fieldset>
+					<legend>Shadow</legend>
+					<ul>
+						<li><input type="color" name="shadowColor" id="shadowColor" value="#000000" /><label for="shadowColor">Color</label></li>
+						<li><input type="range" min="0" max="1" step="0.1" name="shadowOpacity" id="shadowOpacity" value="0" /><label for="shadowAlpha">Opacity</label></li>
+						<li><input type="range" min="0" max="200" step="10" name="shadowBlur" id="shadowBlur" value="90" /><label for="shadowBlur">Blur</label></li>
+						<li><input type="range" min="0" max="200" step="10" name="shadowSpread" id="shadowSpread" value="10" /><label for="shadowColor">Spread</label></li>
+					</ul>
+				</fieldset>
+			</div>
+			<div id="helpPanel" class="panel about hidden">
+				<div class="dedicatedTo">
+					<blockquote>
+						<span class="header">RIP</span>
+						<q>Millennnium War Aigis on Nutaku</q>
+						<hr />
+						<span class="footer">February 12th, 2015 - December 26th, 2017</span>
+					</blockquote>
+					<img class="poster" src="HCG (Nutaku)/Nutaku/title.jpg" />
+					<br />
+					<a href="https://github.com/MillenniumWarAigis/mwa-event-player-js/">@github</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container" id="mainContainer">
+		<div id="bg-container"><img id="bg" src="" class="invisible" /></div>
+		<div id="box"><div class="vspacing"></div><span class="speaker"></span><q class="text"></q></div>
+		<audio id="music" loop="loop">
+			<source src="" type="audio/ogg" />
+			<source src="" type="audio/mpeg" />
+			<source src="" type="audio/wav" />
+			<source src="" type="audio/mp4" />
+			<source src="" type="audio/webm" />
+		</audio>
+		<audio id="voice">
+			<source src="" type="audio/ogg" />
+			<source src="" type="audio/mpeg" />
+			<source src="" type="audio/wav" />
+			<source src="" type="audio/mp4" />
+			<source src="" type="audio/webm" />
+		</audio>
+		<audio id="sfx">
+			<source src="" type="audio/ogg" />
+			<source src="" type="audio/mpeg" />
+			<source src="" type="audio/wav" />
+			<source src="" type="audio/mp4" />
+			<source src="" type="audio/webm" />
+		</audio>
+		<button id="menuButton" type="button"><span>Menu</span></button>
+	</div>
+
+	<div class="frontdrop fade"></div>
+
+	<script>
+		"use strict";
+
+		var EventPlayer =
+			{
+				//
+				// constants
+				//
+				autoadvanceDelay: 3000,		// the maximum delay actually, since this will be divided by half of autoplayRate.
+				autoplayRate: 100,
+				parserCommandPrefix: '#',
+				parserInlineCommentPrefix: '//',
+				//
+				// properties
+				//
+				options:
+				{
+					backgroundPath: "HCG (Nutaku)/Nutaku/",	// path to the CG image files.
+					musicPath: "OST/",				// path to the BGM sound files.
+					voicePath: "Voice/",			// path to the voice sound files.
+					sfxPath: "SFX/",				// path to the sfx sound files.
+					noBgm: false,					// if true, mutes the background music.
+					noVoice: false,					// if true, mutes the voices.
+					noSfx: false,					// if true, mutes the sound effects.
+					classicLineBreaks: false,		// if false, all line breaks within text entries will be replaced with <br/>.
+					classicQuotes: false,			// if false, strip quotes within text entries and display css quotes instead.
+					classicSpeaker: false,			// if false, colorize speaker names.
+					classicMenuButton: false,		// if false, the menu button is styled.
+					classicConversationLog: false,	// if false, the conversation log is styled.
+					classicParser: false,			// if false, the parser will not handle commands and comments differently.
+					autoplay: "classic",			// either "classic" = disabled, "utterance" = automatically advance text, or "char" = animate text character per character and advance text if <EventPlayer.options.autoadvance> is true.
+					autoplaySpeed: 2,				// either 1, 2, 3, or 4. 1 being slow, 4 being fast.
+					autoadvance: true,				// determines whether to autoadvance text when autoplay is set to "char".
+					backgroundColor: "#ffffff",		// determines the body background color.
+					backgroundImage: "",			// determines the body background image.
+					shadowColor: "#000000",			// determines the box shadow color.
+					shadowOpacity: 0,				// determines the box shadow opacity.
+					shadowBlur: 90,					// determines the box shadow blur.
+					shadowSpread: 10,				// determines the box shadow spread.
+				},
+				defaultOptions: [],
+				elements:
+				{
+					frontdrop: document.getElementsByClassName("frontdrop")[0],
+					backdrop: document.getElementsByClassName("backdrop")[0],
+					mainContainer: document.getElementById("mainContainer"),
+					menuButton: document.getElementById("menuButton"),
+					bg: document.getElementById("bg"),
+					box: document.getElementById("box"),
+					speaker: document.getElementsByClassName("speaker")[0],
+					text: document.getElementsByClassName("text")[0],
+					music: document.getElementById("music"),
+					voice: document.getElementById("voice"),
+					sfx: document.getElementById("sfx"),
+
+					mainModal: document.getElementById("mainModal"),
+					scenes: document.getElementById("scenes"),
+					sceneFileInput: document.getElementById("sceneFileInput"),
+					rawTextDump: document.getElementById("rawTextDump"),
+					textDump: document.getElementById("textDump"),
+
+					showGalleryButton: document.getElementById("showGalleryButton"),
+					showTextDumpButton: document.getElementById("showTextDumpButton"),
+					showOptionsButton: document.getElementById("showOptionsButton"),
+					showHelpButton: document.getElementById("showHelpButton"),
+					toggleUiButton: document.getElementById("toggleUiButton"),
+					galleryPanel: document.getElementById("galleryPanel"),
+					textDumpPanel: document.getElementById("textDumpPanel"),
+					optionsPanel: document.getElementById("optionsPanel"),
+					helpPanel: document.getElementById("helpPanel"),
+
+					loadSettingsButton: document.getElementById("loadSettingsButton"),
+					saveSettingsButton: document.getElementById("saveSettingsButton"),
+					resetSettingsButton: document.getElementById("resetSettingsButton"),
+
+					backgroundPath: document.getElementById("backgroundPath"),
+					musicPath: document.getElementById("musicPath"),
+					voicePath: document.getElementById("voicePath"),
+					sfxPath: document.getElementById("sfxPath"),
+
+					bgmOn: document.getElementById("bgmOn"),
+					bgmOff: document.getElementById("bgmOff"),
+					voiceOn: document.getElementById("voiceOn"),
+					voiceOff: document.getElementById("voiceOff"),
+					sfxOn: document.getElementById("sfxOn"),
+					sfxOff: document.getElementById("sfxOff"),
+
+					lineBreaksClassic: document.getElementById("lineBreaksClassic"),
+					lineBreaksModern: document.getElementById("lineBreaksModern"),
+
+					quotesClassic: document.getElementById("quotesClassic"),
+					quotesModern: document.getElementById("quotesModern"),
+
+					speakerClassic: document.getElementById("speakerClassic"),
+					speakerModern: document.getElementById("speakerModern"),
+
+					menuButtonClassic: document.getElementById("menuButtonClassic"),
+					menuButtonModern: document.getElementById("menuButtonModern"),
+
+					conversationLogClassic: document.getElementById("conversationLogClassic"),
+					conversationLogModern: document.getElementById("conversationLogModern"),
+
+					parserClassic: document.getElementById("parserClassic"),
+					parserModern: document.getElementById("parserModern"),
+
+					autoplayClassic: document.getElementById("autoplayClassic"),
+					autoplayUtterance: document.getElementById("autoplayUtterance"),
+					autoplayCharacter: document.getElementById("autoplayCharacter"),
+
+					autoplaySpeedSlow: document.getElementById("autoplaySpeedSlow"),
+					autoplaySpeedMedium: document.getElementById("autoplaySpeedMedium"),
+					autoplaySpeedFast: document.getElementById("autoplaySpeedFast"),
+					autoplaySpeedUltra: document.getElementById("autoplaySpeedUltra"),
+
+					backgroundColor: document.getElementById("backgroundColor"),
+					shadowColor: document.getElementById("shadowColor"),
+					shadowOpacity: document.getElementById("shadowOpacity"),
+					shadowBlur: document.getElementById("shadowBlur"),
+					shadowSpread: document.getElementById("shadowSpread"),
+				},
+				//
+				// changed during the program's lifetime
+				//
+				currentLineIndex: -1,
+				autoplayIndex: 0,
+				autoplayTimer: null,
+				sfxIndex: -1,
+				//
+				// passed by the user
+				//
+				sceneId: 0,
+				cardId: 0,
+				affectionLevel: 0,
+				//
+				// filled by the parser
+				//
+				backgrounds: [],
+				musics: [],
+				speakers: [],
+				texts: [],
+				voices: [],	// played once
+				sfxs: [],	// loopable sounds, either solo or after a voice line
+				lines: [],
+				text: "",	// raw text dump. used for reloading the scene when changing specific settings.
+				//
+				// scene management (not implemented yet)
+				//
+				scenes: [],
+				//
+				// functions
+				//
+				parseResourceIndex: function (cmdLine, items) {
+					let src = cmdLine.toString().trim();
+					let idx = 0;
+
+					if (src.startsWith('<') && src.endsWith('>')) {
+						idx = parseInt(src.substr(1, src.length - 2));
+
+						// NOTE: -1 is a special value used to stop the playback.
+						if (idx < -1 || idx > items.length - 1) {
+							console.assert(false, {
+								message: "resource index out of bounds.",
+								input: cmdLine,
+								index: idx,
+								items: items
+							});
+
+							return -1;
+						}
+					}
+					else {
+						idx = items.indexOf(src);
+
+						if (idx === -1) {
+							items.push(src);
+							idx = items.length - 1;
+						}
+					}
+
+					return idx;
+				},
+				/*
+				parseResourceIndices: function (cmdLine, items) {
+					let tokens = cmdLine.split('|');
+					let indices = [];
+
+					for (let i in tokens) {
+						let token = tokens[i];
+
+						indices.push(this.parseResourceIndex(token, items));
+					}
+
+					return indices;
+				},
+				*/
+				parseText: function (stream) {
+					let defaultMusic = "BgmHarem" + this.affectionLevel + ".mp3";
+					let defaultBackground = this.cardId + "_eventuc_" + this.affectionLevel + ".png";
+
+					this.speakers = [];
+					this.musics = [];
+					this.backgrounds = [];
+					this.texts = [];
+					this.voices = [];
+					this.sfxs = [];
+					this.lines = [];
+					this.text = stream;
+
+					let lines = stream.split('\r\n');
+					let lineItem = { text: [] };
+					let br = !this.options.classicLineBreaks ? "\n" : "<span class=\"br\"></span>";
+
+					for (let i in lines) {
+						let line = lines[i];
+
+						// empty line
+						if (line.length === 0) {
+							if (lineItem.text.length === 0) {
+								if (!lineItem.hasOwnProperty("background")
+									&& !lineItem.hasOwnProperty("music")
+									&& !lineItem.hasOwnProperty("voice")
+									&& !lineItem.hasOwnProperty("sfx")) {
+									// nothing was set at all, so it's probably empty lines at the beginning of the file or a cluster of empty lines, which only the first one matters.
+									continue;
+								}
+							}
+
+							// flush
+
+							if (this.lines.length === 0) {
+								if (!lineItem.hasOwnProperty("background")) {
+									this.backgrounds.push(defaultBackground);
+									lineItem.background = 0;
+								}
+
+								if (!lineItem.hasOwnProperty("music")) {
+									this.musics.push(defaultMusic);
+									lineItem.music = 0;
+								}
+							}
+
+							// discard quotes, as we make them optional. (for styling with css)
+							if (!this.options.classicQuotes && lineItem.hasOwnProperty("speaker") && (lineItem.text[0][0] === '\"') && (lineItem.text[lineItem.text.length - 1][lineItem.text[lineItem.text.length - 1].length - 1] === '\"')) {
+								let first = lineItem.text[0];
+
+								if (lineItem.text.length > 1) {
+									let last = lineItem.text[lineItem.text.length - 1];
+
+									lineItem.text[0] = first.substr(1, first.length - 1);
+									lineItem.text[lineItem.text.length - 1] = last.substr(0, last.length - 1);
+								}
+								else {
+									lineItem.text[0] = first.substr(1, first.length - 2);
+								}
+							}
+
+							this.texts.push(lineItem.text.join(br));
+
+							lineItem.text = this.texts.length - 1;
+
+							this.lines.push(lineItem);
+
+							lineItem = { text: [] };
+						}
+						// speaker
+						else if (line[0] === '@' || line[0] === '＠') {
+							let speakerName = line.substr(1);
+
+							let speakerIndex = this.speakers.indexOf(speakerName);
+							if (speakerIndex === -1) {
+								// register speaker.
+								this.speakers.push(speakerName);
+								speakerIndex = this.speakers.length - 1;
+							}
+
+							lineItem.speaker = speakerIndex;
+						}
+						else if (!this.options.classicParser && line.startsWith(this.parserCommandPrefix)) {
+							let cmdName = line.substr(this.parserCommandPrefix.length);
+
+							if (cmdName.startsWith("background")) {
+								lineItem.background = this.parseResourceIndex(cmdName.substr("background".length), this.backgrounds);
+							}
+							else if (cmdName.startsWith("music")) {
+								lineItem.music = this.parseResourceIndex(cmdName.substr("music".length), this.musics);
+							}
+							else if (cmdName.startsWith("voice")) {
+								lineItem.voice = this.parseResourceIndex(cmdName.substr("voice".length), this.voices);
+							}
+							else if (cmdName.startsWith("sfx")) {
+								if (typeof lineItem.sfx === "undefined" || lineItem.sfx == null) {
+									lineItem.sfx = [];
+								}
+
+								lineItem.sfx.push(this.parseResourceIndex(cmdName.substr("sfx".length), this.sfxs));
+							}
+							else if (cmdName.startsWith("precache-background")) {
+								this.parseResourceIndex(cmdName.substr("precache-background".length), this.backgrounds);
+							}
+							else if (cmdName.startsWith("precache-music")) {
+								this.parseResourceIndex(cmdName.substr("precache-music".length), this.musics);
+							}
+							else if (cmdName.startsWith("precache-voice")) {
+								this.parseResourceIndex(cmdName.substr("precache-voice".length), this.voices);
+							}
+							else if (cmdName.startsWith("precache-sfx")) {
+								this.parseResourceIndex(cmdName.substr("precache-sfx".length), this.sfxs);
+							}
+							else if (cmdName.startsWith("parser-command-prefix")) {
+								this.parserCommandPrefix = cmdName.substr("parser-command-prefix".length).trim();
+							}
+							else if (cmdName.startsWith("parser-inline-comment-prefix")) {
+								this.parserInlineCommentPrefix = cmdName.substr("parser-inline-comment-prefix".length).trim();
+							}
+						}
+						else if (!this.options.classicParser && line.startsWith(this.parserInlineCommentPrefix)) {
+							// ignore the entire line.
+						}
+						else {
+							lineItem.text.push(line);
+						}
+					}
+
+					//console.dir(this);
+				},
+				autoplay: function () {
+					if (this.options.autoplay === "utterance") {
+						this.autoplayTimer = null;
+
+						if (this.currentLineIndex < this.lines.length) {
+							this.jumpTo(this.currentLineIndex + 1);
+						}
+					}
+					else if (this.options.autoplay === "char") {
+						let lineIndex = this.elements.text.getAttribute("data-text-index");
+
+						if (this.texts.length === 0) {
+							return;
+						}
+
+						if ((lineIndex != -1)
+							&& (this.texts[lineIndex].length > 0)
+							&& (this.autoplayIndex < this.texts[lineIndex].length - 1)) {
+							let text = this.texts[lineIndex];
+
+							if (text[this.autoplayIndex + 1] === '<') {
+								let endTagIndex = text.indexOf('>', this.autoplayIndex + 1);
+								if (endTagIndex != -1) {
+									this.autoplayIndex = endTagIndex;
+								}
+								// somehow, a < without a >
+								else {
+									++this.autoplayIndex;
+								}
+							}
+							else {
+								++this.autoplayIndex;
+							}
+
+							this.elements.text.innerHTML = text.slice(0, this.autoplayIndex + 1);
+
+							if (this.autoplayTimer != null) {
+								window.clearTimeout(this.autoplayTimer);
+							}
+
+							this.autoplayTimer = window.setTimeout(this.autoplay.bind(this), this.autoplayRate / this.options.autoplaySpeed);
+						}
+						else {
+							if (this.options.autoadvance) {
+								this.autoplayTimer = window.setTimeout(this.autoadvance.bind(this), this.autoadvanceDelay / (this.options.autoplaySpeed / 2));	// forced belay between utterances
+							}
+							else {
+								// TODO animate a tiny bobbing arrow marker to hint that the text has finished animating.
+							}
+						}
+					}
+				},
+				autoadvance: function () {
+					if (this.autoplayTimer != null) {
+						window.clearTimeout(this.autoplayTimer);
+						this.autoplayTimer = null;
+					}
+
+					this.jumpTo(this.currentLineIndex + 1);
+				},
+				setAudioSource: function (elem, fileName, basePath) {
+					let fileNameWithoutExtension = fileName;
+					let indexOfDot = fileNameWithoutExtension.lastIndexOf('.');
+
+					if (indexOfDot != -1) {
+						if (indexOfDot > fileNameWithoutExtension.lastIndexOf('/')
+							|| indexOfDot > fileNameWithoutExtension.lastIndexOf('\\')) {
+							fileNameWithoutExtension = fileNameWithoutExtension.substr(0, indexOfDot);
+						}
+					}
+
+					if (!elem.hasAttribute("data-source-name")
+						|| elem.getAttribute("data-source-name") != fileNameWithoutExtension) {
+						elem.setAttribute("data-line-index", this.currentLineIndex);
+						elem.setAttribute("data-source-name", fileNameWithoutExtension);
+						elem.src = Path.combine(basePath, fileName);
+
+						return true;
+					}
+
+					return false;
+				},
+				jumpTo: function (index) {
+					if (index >= 0 && index <= this.lines.length - 1) {
+						let line = this.lines[index];
+
+						this.currentLineIndex = index;
+
+						{
+							this.elements.speaker.innerHTML = (line.hasOwnProperty("speaker")) ? this.speakers[line.speaker] : "&nbsp;";
+							this.elements.speaker.setAttribute("data-speaker-index", (line.hasOwnProperty("speaker")) ? line.speaker : -1);
+						}
+
+						if (line.hasOwnProperty("text")) {
+							this.elements.text.setAttribute("data-text-index", line.text);
+							this.elements.text.setAttribute("data-text-type", (line.hasOwnProperty("speaker")) ? "dialogue" : "narration");
+							this.elements.text.setAttribute("data-speaker-index", (line.hasOwnProperty("speaker")) ? line.speaker : -1);
+							this.elements.text.setAttribute("data-quotes", this.options.classicQuotes ? "none" : "doublequotes");
+
+							if (this.autoplayTimer != null) {
+								window.clearTimeout(this.autoplayTimer);
+							}
+
+							this.autoplayIndex = 0;
+
+							if (this.options.autoplay === "utterance") {
+								let rawText = this.texts[line.text].replace(/(<([^>]+)>)/ig, "");
+
+								this.elements.text.innerHTML = this.texts[line.text];
+								this.autoplayTimer = window.setTimeout(this.autoplay.bind(this), this.autoplayRate * rawText.length / this.options.autoplaySpeed);
+							}
+							else if (this.options.autoplay === "char") {
+								this.autoplay();
+							}
+							else {
+								this.elements.text.innerHTML = this.texts[line.text];
+							}
+						}
+
+						if (line.hasOwnProperty("background")) {
+							if (!this.elements.bg.hasAttribute("data-source-name")
+								|| this.elements.bg.getAttribute("data-source-name") != this.backgrounds[line.background]) {
+								this.elements.bg.src = Path.combine(this.options.backgroundPath, this.backgrounds[line.background]);
+								this.elements.bg.setAttribute("data-background-index", line.background);
+								this.elements.bg.setAttribute("data-source-name", this.backgrounds[line.background]);
+								this.elements.bg.removeClass("invisible");
+							}
+						}
+
+						if (line.hasOwnProperty("music")) {
+							if (line.music === -1) {
+								this.elements.music.stop();
+							}
+							else {
+								if (this.setAudioSource(this.elements.music, this.musics[line.music], this.options.musicPath)) {
+									this.elements.music.load();
+								}
+							}
+						}
+
+						if (line.hasOwnProperty("voice")) {
+							if (line.voice === -1) {
+								this.elements.voice.stop();
+							}
+							else {
+								if (this.setAudioSource(this.elements.voice, this.voices[line.voice], this.options.voicePath)) {
+									// prevent overlapping
+									this.sfxIndex = 0;
+									this.elements.sfx.stop();
+
+									this.elements.voice.load();
+								}
+							}
+						}
+						// solo sfxs. (sfxs that follow a voice line are handled in the voice.onended event handler.)
+						else if (line.hasOwnProperty("sfx")) {
+							if (line.sfx.length === 0 || line.sfx[0] === -1) {
+								this.sfxIndex = 0;
+								this.elements.sfx.stop();
+							}
+							else {
+								this.sfxIndex = Math.floor(Math.random() * (line.sfx.length - 1));
+
+								if (this.setAudioSource(this.elements.sfx, this.sfxs[line.sfx[this.sfxIndex]], this.options.sfxPath)) {
+									this.elements.sfx.load();
+								}
+							}
+						}
+
+						this.elements.bg.addClass("fade").addClass("in");
+						this.elements.box.addClass("fade").addClass("in");
+					}
+					else {
+						// fade to black & back to selection screen
+						this.elements.bg.addClass("fade").removeClass("in");
+						this.elements.box.addClass("fade").removeClass("in");
+					}
+				},
+				advance: function () {
+					if (this.options.autoplay === "char") {
+						if (this.currentLineIndex >= 0 && this.autoplayIndex < this.texts[this.currentLineIndex].length - 1) {
+							this.autoplayIndex = this.texts[this.currentLineIndex].length - 2;
+							this.autoplay();
+							return;
+						}
+					}
+
+					if (this.currentLineIndex <= this.lines.length - 1) {
+						this.jumpTo(this.currentLineIndex + 1);
+					}
+				},
+				isMenuVisible: function () {
+					return !this.elements.mainModal.hasAttribute("data-state") ||
+						this.elements.mainModal.getAttribute("data-state") === "open";
+				},
+				showMenu: function (show) {
+					if (typeof show === "undefined") {
+						show = this.isMenuVisible() ? false : true;
+					}
+
+					if (show) {
+						this.elements.mainModal.setAttribute("data-state", "open");
+						this.elements.backdrop.addClass("fade").addClass("in");
+					}
+					else {
+						this.elements.mainModal.setAttribute("data-state", "closed");
+						this.elements.mainContainer.style.display = "block";
+						this.elements.backdrop.addClass("fade").removeClass("in");
+					}
+				},
+				isBoxVisible: function () {
+					return !this.elements.box.hasAttribute("data-state") ||
+						this.elements.box.getAttribute("data-state") === "open";
+				},
+				showBox: function (show) {
+					if (typeof show === "undefined") {
+						show = this.isBoxVisible() ? false : true;
+					}
+
+					if (show) {
+						this.elements.box.setAttribute("data-state", "open");
+						this.elements.box.style.visibility = "visible";
+						this.elements.menuButton.style.visibility = "visible";
+					}
+					else {
+						this.elements.box.setAttribute("data-state", "closed");
+						this.elements.box.style.visibility = "hidden";
+						this.elements.menuButton.style.visibility = "hidden";
+					}
+				},
+				createLog: function () {
+					{
+						this.elements.rawTextDump.innerText = this.text;
+					}
+
+					{
+						this.elements.textDump.innerText = "";
+
+						let existingUL = this.elements.textDump.getElementsByTagName("UL");
+
+						if (typeof existingUL !== "undefined" && existingUL.length > 0) {
+							this.elements.textDump.removeChild(existingUL[0]);
+						}
+
+						let ul = document.createElement("ol");
+
+						for (let i in this.lines) {
+							let line = this.lines[i];
+							let li = document.createElement("li");
+
+							{
+								let span = document.createElement("span");
+								span.className = "speaker custom";
+								span.setAttribute("data-speaker-index", (line.hasOwnProperty("speaker")) ? line.speaker : -1);
+								if (line.hasOwnProperty("speaker")) {
+									let spanText = document.createTextNode(this.speakers[line.speaker]);
+									span.appendChild(spanText);
+								}
+
+								li.appendChild(span);
+							}
+
+							{
+								let span = document.createElement("q");
+								span.className = "text";
+								span.setAttribute("data-text-index", line.text);
+								span.setAttribute("data-text-type", (line.hasOwnProperty("speaker")) ? "dialogue" : "narration");
+								span.setAttribute("data-speaker-index", (line.hasOwnProperty("speaker")) ? line.speaker : -1);
+								if (this.options.classicQuotes) {
+									span.style.quotes = "none";
+								}
+
+								span.innerHTML = this.texts[line.text];
+
+								li.appendChild(span);
+							}
+
+							ul.appendChild(li);
+						}
+
+						this.elements.textDump.appendChild(ul);
+					}
+				},
+				load: function () {
+					let optionsJson = "";
+
+					try {
+						optionsJson = localStorage.getItem("options");
+					}
+					catch (e) {
+						console.warn(e);
+					}
+
+					if (optionsJson != null && optionsJson !== "") {
+						let options = JSON.parse(optionsJson);
+
+						for (let prop in options) {
+							if (options.hasOwnProperty(prop)) {
+								this.options[prop] = options[prop];
+							}
+						}
+					}
+
+					this.updateSettingsControls();
+				},
+				save: function () {
+					try {
+						localStorage.setItem("options", JSON.stringify(this.options));
+					}
+					catch (e) {
+						console.warn(e);
+					}
+				},
+				reset: function () {
+					for (let prop in this.defaultOptions) {
+						if (this.defaultOptions.hasOwnProperty(prop)) {
+							this.options[prop] = this.defaultOptions[prop];
+						}
+					}
+
+					localStorage.setItem("options", "{}");
+
+					this.updateSettingsControls();
+				},
+				reload: function () {
+					if (this.text !== "") {
+						let savedLineIndex = this.currentLineIndex;
+
+						this.parseText(this.text);
+
+						this.jumpTo(this.currentLineIndex);
+					}
+				},
+				loadFile: function (file) {
+					let reader = new FileReader();
+
+					reader.addEventListener("load", function () {
+						EventPlayer.sceneId = file.name.substr(0, 3).padStart(3, '0');
+						EventPlayer.cardId = parseInt(file.name.substr("000_HarlemText_".length, 3)).toString().padStart(3, '0');
+						EventPlayer.affectionLevel = parseInt(file.name.substr("000_HarlemText_000_".length, 1));
+						EventPlayer.currentLineIndex = -1;
+
+						EventPlayer.parseText(reader.result);
+						EventPlayer.advance();
+						EventPlayer.createLog();
+						EventPlayer.showMenu(false);
+					});
+
+					reader.readAsText(file);
+				},
+				updateSettingsControls: function () {
+					this.elements.backgroundPath.value = (this.options.backgroundPath);
+					this.elements.musicPath.value = (this.options.musicPath);
+					this.elements.voicePath.value = (this.options.voicePath);
+					this.elements.sfxPath.value = (this.options.sfxPath);
+
+					this.elements.bgmOn.checked = (!this.options.noBgm);
+					this.elements.bgmOff.checked = (this.options.noBgm);
+
+					this.elements.voiceOn.checked = (!this.options.noVoice);
+					this.elements.voiceOff.checked = (this.options.noVoice);
+
+					this.elements.sfxOn.checked = (!this.options.noSfx);
+					this.elements.sfxOff.checked = (this.options.noSfx);
+
+					this.elements.lineBreaksClassic.checked = (this.options.classicLineBreaks);
+					this.elements.lineBreaksModern.checked = (!this.options.classicLineBreaks);
+
+					this.elements.quotesClassic.checked = (this.options.classicQuotes);
+					this.elements.quotesModern.checked = (!this.options.classicQuotes);
+
+					this.elements.speakerClassic.checked = (this.options.classicSpeaker);
+					this.elements.speakerModern.checked = (!this.options.classicSpeaker);
+
+					this.elements.menuButtonClassic.checked = (this.options.classicMenuButton);
+					this.elements.menuButtonModern.checked = (!this.options.classicMenuButton);
+
+					this.elements.conversationLogClassic.checked = (this.options.classicConversationLog);
+					this.elements.conversationLogModern.checked = (!this.options.classicConversationLog);
+
+					this.elements.parserClassic.checked = (this.options.classicParser);
+					this.elements.parserModern.checked = (!this.options.classicParser);
+
+					this.elements.autoplayClassic.checked = (this.options.autoplay === "classic");
+					this.elements.autoplayUtterance.checked = (this.options.autoplay === "utterance");
+					this.elements.autoplayCharacter.checked = (this.options.autoplay === "char");
+
+					this.elements.autoplaySpeedSlow.checked = (this.options.autoplaySpeed == 1);
+					this.elements.autoplaySpeedMedium.checked = (this.options.autoplaySpeed == 2);
+					this.elements.autoplaySpeedFast.checked = (this.options.autoplaySpeed == 3);
+					this.elements.autoplaySpeedUltra.checked = (this.options.autoplaySpeed == 4);
+
+					this.elements.backgroundColor.value = this.options.backgroundColor;
+
+					this.elements.shadowColor.value = this.options.shadowColor;
+					this.elements.shadowOpacity.value = this.options.shadowOpacity;
+					this.elements.shadowBlur.value = this.options.shadowBlur;
+					this.elements.shadowSpread.value = this.options.shadowSpread;
+				},
+				applyOptions: function () {
+					this.elements.music.muted = this.options.noBgm;
+					this.elements.voice.muted = this.options.noVoice;
+					this.elements.sfx.muted = this.options.noSfx;
+
+					if (!this.options.classicMenuButton) {
+						this.elements.menuButton.addClass("custom");
+					}
+
+					if (!this.options.classicSpeaker) {
+						this.elements.speaker.addClass("custom");
+					}
+
+					this.elements.rawTextDump.style.display = this.options.classicConversationLog ? "block" : "none";
+					this.elements.textDump.style.display = !this.options.classicConversationLog ? "block" : "none";
+
+					this.refreshThemeBackground();
+					this.refreshThemeShadow();
+				},
+				refreshThemeBackground: function () {
+					document.body.style.backgroundColor = this.options.backgroundColor;
+					/*
+					if (this.options.backgroundImage != "")
+					{
+						document.body.style.backgroundPosition = "center center";
+						document.body.style.backgroundRepeat = "repeat";
+						document.body.style.backgroundAttachment = "fixed";
+						document.body.style.backgroundImage = "url('" + this.options.backgroundImage + "')";
+					}
+					*/
+				},
+				refreshThemeShadow: function () {
+					let boxShadow = [];
+
+					boxShadow.push("0px");
+					boxShadow.push("0px");
+					boxShadow.push(this.options.shadowBlur + "px");
+					boxShadow.push(this.options.shadowSpread + "px");
+					boxShadow.push(Converter.hexToRgba(this.options.shadowColor, this.options.shadowOpacity));
+
+					this.elements.bg.parentElement.style.boxShadow = boxShadow.join(' ');
+				},
+				initializeDefaultOptions: function () {
+					for (let prop in this.options) {
+						if (this.options.hasOwnProperty(prop)) {
+							this.defaultOptions[prop] = this.options[prop];
+						}
+					}
+				},
+				registerEventListeners: function () {
+					// modal backdrop callbacks
+					{
+						this.elements.backdrop.addEventListener("click", function (e) {
+							EventPlayer.showMenu(false);
+						});
+					}
+
+					// modal dialog / gallery callbacks
+					/*{
+						this.elements.scenes.addEventListener("change", function(e) {
+							// currently not implemented.
+						});
+					}*/
+
+					// modal dialog / log callbacks
+					{
+						this.elements.sceneFileInput.addEventListener("change", function (e) {
+							EventPlayer.loadFile(e.target.files[0]);
+
+							// to allow reopening the same file.
+							this.value = null;
+							return false;
+						});
+					}
+
+					// modal dialog / options callbacks
+					{
+						{
+							this.elements.loadSettingsButton.addEventListener("click", function (e) {
+								EventPlayer.load();
+							});
+
+							this.elements.saveSettingsButton.addEventListener("click", function (e) {
+								EventPlayer.save();
+							});
+
+							this.elements.resetSettingsButton.addEventListener("click", function (e) {
+								EventPlayer.reset();
+							});
+						}
+
+						{
+							this.elements.backgroundPath.addEventListener("change", function (e) {
+								EventPlayer.options.backgroundPath = e.target.value;
+							});
+
+							this.elements.musicPath.addEventListener("change", function (e) {
+								EventPlayer.options.musicPath = e.target.value;
+							});
+
+							this.elements.voicePath.addEventListener("change", function (e) {
+								EventPlayer.options.voicePath = e.target.value;
+							});
+
+							this.elements.sfxPath.addEventListener("change", function (e) {
+								EventPlayer.options.sfxPath = e.target.value;
+							});
+						}
+
+						{
+							let bgmChange = function (e) {
+								EventPlayer.options.noBgm = e.target.value == 0;
+
+								EventPlayer.elements.music.muted = EventPlayer.options.noBgm ? "muted" : "";
+							};
+
+							this.elements.bgmOn.addEventListener("change", bgmChange);
+							this.elements.bgmOff.addEventListener("change", bgmChange);
+						}
+
+						{
+							let voiceChange = function (e) {
+								EventPlayer.options.noVoice = e.target.value == 0;
+
+								EventPlayer.elements.voice.muted = EventPlayer.options.noVoice ? "muted" : "";
+							};
+
+							this.elements.voiceOn.addEventListener("change", voiceChange);
+							this.elements.voiceOff.addEventListener("change", voiceChange);
+						}
+
+						{
+							let sfxChange = function (e) {
+								EventPlayer.options.noSfx = e.target.value == 0;
+
+								EventPlayer.elements.sfx.muted = EventPlayer.options.noSfx ? "muted" : "";
+							};
+
+							this.elements.sfxOn.addEventListener("change", sfxChange);
+							this.elements.sfxOff.addEventListener("change", sfxChange);
+						}
+
+						{
+							let lineBreaksChange = function (e) {
+								EventPlayer.options.classicLineBreaks = e.target.value != 0;
+
+								EventPlayer.reload();
+							};
+
+							this.elements.lineBreaksClassic.addEventListener("change", lineBreaksChange);
+							this.elements.lineBreaksModern.addEventListener("change", lineBreaksChange);
+						}
+
+						{
+							let quotesChange = function (e) {
+								EventPlayer.options.classicQuotes = e.target.value != 0;
+
+								EventPlayer.reload();
+							};
+
+							this.elements.quotesClassic.addEventListener("change", quotesChange);
+							this.elements.quotesModern.addEventListener("change", quotesChange);
+						}
+
+						{
+							let speakerChange = function (e) {
+								EventPlayer.options.classicSpeaker = e.target.value != 0;
+
+								if (EventPlayer.options.classicSpeaker)
+									EventPlayer.elements.speaker.removeClass("custom");
+								else
+									EventPlayer.elements.speaker.addClass("custom");
+							};
+
+							this.elements.speakerClassic.addEventListener("change", speakerChange);
+							this.elements.speakerModern.addEventListener("change", speakerChange);
+						}
+
+						{
+							let menuButtonChange = function (e) {
+								EventPlayer.options.classicMenuButton = e.target.value != 0;
+
+								if (EventPlayer.options.classicMenuButton)
+									EventPlayer.elements.menuButton.removeClass("custom");
+								else
+									EventPlayer.elements.menuButton.addClass("custom");
+							};
+
+							this.elements.menuButtonClassic.addEventListener("change", menuButtonChange);
+							this.elements.menuButtonModern.addEventListener("change", menuButtonChange);
+						}
+
+						{
+							let conversationLogChange = function (e) {
+								EventPlayer.options.classicConversationLog = e.target.value != 0;
+
+								EventPlayer.elements.rawTextDump.style.display = EventPlayer.options.classicConversationLog ? "block" : "none";
+								EventPlayer.elements.textDump.style.display = !EventPlayer.options.classicConversationLog ? "block" : "none";
+							};
+
+							this.elements.conversationLogClassic.addEventListener("change", conversationLogChange);
+							this.elements.conversationLogModern.addEventListener("change", conversationLogChange);
+						}
+
+						{
+							let parserChange = function (e) {
+								EventPlayer.options.classicParser = e.target.value != 0;
+
+								EventPlayer.reload();
+							};
+
+							this.elements.parserClassic.addEventListener("change", parserChange);
+							this.elements.parserModern.addEventListener("change", parserChange);
+						}
+
+						{
+							let autoplayChange = function (e) {
+								EventPlayer.options.autoplay = e.target.value;
+
+								if (EventPlayer.options.autoplay === "utterance" || EventPlayer.options.autoplay === "char") {
+									//EventPlayer.autoplay();
+								}
+							};
+
+							this.elements.autoplayClassic.addEventListener("change", autoplayChange);
+							this.elements.autoplayUtterance.addEventListener("change", autoplayChange);
+							this.elements.autoplayCharacter.addEventListener("change", autoplayChange);
+						}
+
+						{
+							let autoplaySpeedChange = function (e) {
+								EventPlayer.options.autoplaySpeed = e.target.value;
+							};
+
+							this.elements.autoplaySpeedSlow.addEventListener("change", autoplaySpeedChange);
+							this.elements.autoplaySpeedMedium.addEventListener("change", autoplaySpeedChange);
+							this.elements.autoplaySpeedFast.addEventListener("change", autoplaySpeedChange);
+							this.elements.autoplaySpeedUltra.addEventListener("change", autoplaySpeedChange);
+						}
+
+						{
+
+							this.elements.backgroundColor.addEventListener("change", function (e) {
+								EventPlayer.options.backgroundColor = e.target.value;
+
+								EventPlayer.refreshThemeBackground();
+							});
+
+							this.elements.shadowColor.addEventListener("change", function (e) {
+								EventPlayer.options.shadowColor = e.target.value;
+
+								EventPlayer.refreshThemeShadow();
+							});
+
+							this.elements.shadowOpacity.addEventListener("change", function (e) {
+								EventPlayer.options.shadowOpacity = e.target.value;
+
+								EventPlayer.refreshThemeShadow();
+							});
+
+							this.elements.shadowBlur.addEventListener("change", function (e) {
+								EventPlayer.options.shadowBlur = e.target.value;
+
+								EventPlayer.refreshThemeShadow();
+							});
+
+							this.elements.shadowSpread.addEventListener("change", function (e) {
+								EventPlayer.options.shadowSpread = e.target.value;
+
+								EventPlayer.refreshThemeShadow();
+							});
+						}
+					}
+
+					// modal dialog / navigation bar callbacks
+					{
+						let navigationButtonClick = function (e) {
+							EventPlayer.elements.galleryPanel.show(e.target === EventPlayer.elements.showGalleryButton);
+							EventPlayer.elements.textDumpPanel.show(e.target === EventPlayer.elements.showTextDumpButton);
+							EventPlayer.elements.optionsPanel.show(e.target === EventPlayer.elements.showOptionsButton);
+							EventPlayer.elements.helpPanel.show(e.target === EventPlayer.elements.showHelpButton);
+						};
+
+						this.elements.showGalleryButton.addEventListener("click", navigationButtonClick);
+						this.elements.showTextDumpButton.addEventListener("click", navigationButtonClick);
+						this.elements.showOptionsButton.addEventListener("click", navigationButtonClick);
+						this.elements.showHelpButton.addEventListener("click", navigationButtonClick);
+						this.elements.toggleUiButton.addEventListener("click", function (e) {
+							EventPlayer.showMenu(false);
+							EventPlayer.showBox(false);
+						});
+					}
+
+					// audio callbacks
+					{
+						this.elements.music.addEventListener("canplaythrough", function (e) {
+							if (this.hasAttribute("data-source-name") && this.getAttribute("data-source-name") != "") {
+								EventPlayer.elements.music.play();
+							}
+						});
+
+						this.elements.music.addEventListener("ended", function () {
+							EventPlayer.elements.music.stop();
+						});
+					}
+
+					{
+						this.elements.voice.addEventListener("canplaythrough", function (e) {
+							if (this.hasAttribute("data-source-name") && this.getAttribute("data-source-name") != "") {
+								EventPlayer.elements.voice.play();
+							}
+						});
+
+						this.elements.voice.addEventListener("ended", function () {
+							EventPlayer.elements.voice.stop();
+
+							if (EventPlayer.elements.voice.hasAttribute("data-line-index")) {
+								let line = EventPlayer.lines[EventPlayer.elements.voice.getAttribute("data-line-index")];
+
+								if (line.hasOwnProperty("sfx")) {
+									if (line.sfx.length > 1 && EventPlayer.sfxIndex >= 0 && EventPlayer.sfxIndex <= line.sfx.length - 1) {
+										let idx = EventPlayer.sfxIndex;
+
+										do {
+											EventPlayer.sfxIndex = Math.floor(Math.random() * (line.sfx.length - 1));
+										} while (EventPlayer.sfxIndex === idx);
+
+										if (EventPlayer.setAudioSource(EventPlayer.elements.sfx, EventPlayer.sfxs[line.sfx[EventPlayer.sfxIndex]], EventPlayer.options.sfxPath)) {
+											EventPlayer.elements.sfx.load();
+										}
+									}
+								}
+							}
+						});
+					}
+
+					{
+						this.elements.sfx.addEventListener("canplaythrough", function (e) {
+							if (this.hasAttribute("data-source-name") && this.getAttribute("data-source-name") != "") {
+								EventPlayer.elements.sfx.play();
+							}
+						});
+
+						this.elements.sfx.addEventListener("ended", function () {
+							let stopIt = true;
+
+							if (EventPlayer.elements.sfx.hasAttribute("data-line-index")) {
+								let line = EventPlayer.lines[EventPlayer.elements.sfx.getAttribute("data-line-index")];
+
+								if (line.hasOwnProperty("sfx")) {
+									if (line.sfx.length > 1 && EventPlayer.sfxIndex >= 0 && EventPlayer.sfxIndex <= line.sfx.length - 1) {
+										let idx = EventPlayer.sfxIndex;
+
+										do {
+											EventPlayer.sfxIndex = Math.floor(Math.random() * (line.sfx.length - 1));
+										} while (EventPlayer.sfxIndex === idx);
+
+										if (EventPlayer.setAudioSource(EventPlayer.elements.sfx, EventPlayer.sfxs[line.sfx[EventPlayer.sfxIndex]], EventPlayer.options.sfxPath)) {
+											EventPlayer.elements.sfx.load();
+										}
+
+										stopIt = false;
+									}
+								}
+							}
+
+							if (stopIt) {
+								EventPlayer.elements.sfx.stop();
+							}
+						});
+					}
+
+					// image input hooks
+					{
+						this.elements.bg.addEventListener("click", function (e) {
+							if (!EventPlayer.isBoxVisible()) {
+								EventPlayer.showBox(true);
+							}
+							else {
+								EventPlayer.advance();
+							}
+						});
+
+						this.elements.bg.addEventListener("contextmenu", function (e) {
+							EventPlayer.showBox();
+
+							e.preventDefault();
+							e.stopPropagation();
+
+							return false;
+						});
+
+						this.elements.bg.addEventListener("wheel", function (e) {
+							if (EventPlayer.isBoxVisible()) {
+								let newIndex = EventPlayer.currentLineIndex + (e.wheelDelta < 0 ? 1 : -1);
+
+								if (newIndex >= 0) {
+									EventPlayer.jumpTo(newIndex);
+								}
+							}
+						}, { passive: true });
+					}
+
+					// menu button callbacks
+					{
+						this.elements.menuButton.addEventListener("click", function (e) {
+							EventPlayer.showMenu(true);
+						});
+					}
+
+					// document input hooks
+
+					document.addEventListener("keydown", function (e) {
+						if (e.keyCode === 32 || e.keyCode === 13) {	// space or enter
+							if (!EventPlayer.isMenuVisible()) {
+								if (!EventPlayer.isBoxVisible()) {
+									EventPlayer.showBox(true);
+								}
+								else {
+									EventPlayer.advance();
+								}
+							}
+						}
+						else if (e.keyCode === 27) {	// escape
+							EventPlayer.showMenu();
+						}
+						else if (e.key === 'h') {
+							if (!EventPlayer.isMenuVisible()) {
+								EventPlayer.showBox();
+							}
+						}
+					});
+
+					document.addEventsListener("drag dragstart dragend dragover dragenter dragleave drop", function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+					});
+
+					/*
+					document.addEventsListener("dragenter dragover", function (e) {
+						// TODO I may want to provide some visual feedback to notify the user that this is a droppable zone.
+					});
+
+					document.addEventsListener("dragleave dragend", function (e) {
+						// TODO remove the visual feedback.
+					});
+					*/
+					document.addEventListener("drop", function (e) {
+						EventPlayer.loadFile(e.dataTransfer.files[0]);
+					});
+				},
+				initialize: function () {
+					this.initializeDefaultOptions();
+					this.showMenu(true);
+					this.registerEventListeners();
+					this.load();
+					this.applyOptions();
+				}
+			};
+
+		//
+		// Extension Methods
+		//
+		{
+			// EventTarget
+			{
+				EventTarget.prototype.addEventsListener = function (s, fn) {
+					s.split(' ').forEach(e => this.addEventListener(e, fn, false));
+
+					return this;
+				}
+			}
+
+			// HTMLElement
+			{
+				HTMLElement.prototype.hasClass = function (className) {
+					if (this.classList) {
+						return this.classList.contains(className);
+					}
+					else {
+						return !!this.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+					}
+				}
+
+				HTMLElement.prototype.addClass = function (className) {
+					if (this.classList) {
+						this.classList.add(className);
+					}
+					else if (!this.hasClass(className)) {
+						this.className += " " + className;
+					}
+
+					return this;
+				}
+
+				HTMLElement.prototype.removeClass = function (className) {
+					if (this.classList) {
+						this.classList.remove(className);
+					}
+					else if (this.hasClass(className)) {
+						let reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+
+						this.className = this.className.replace(reg, ' ');
+					}
+
+					return this;
+				}
+
+				HTMLElement.prototype.show = function (show) {
+					if (typeof show === "undefined") show = true;
+
+					if (show)
+						this.removeClass("hidden");
+					else
+						this.addClass("hidden");
+
+					return this;
+				}
+
+				HTMLElement.prototype.hide = function (hide) {
+					if (typeof hide === "undefined") hide = true;
+
+					if (hide)
+						this.addClass("hidden");
+					else
+						this.removeClass("hidden");
+
+					return this;
+				}
+			}
+
+			// HTMLAudioElement
+			{
+				if (typeof HTMLAudioElement.prototype.stop === "undefined") {
+					HTMLAudioElement.prototype.stop = function () {
+						this.pause();
+						this.currentTime = 0;
+						this.setAttribute("data-source-name", "");
+						this.src = "";	// NOTE: this may throw an exception but won't trigger a play event.
+					};
+				}
+			}
+		}
+
+		//
+		// Utility classes
+		//
+		{
+			var Converter = {
+				hexPattern: new RegExp(/^#(?:[0-9a-f]{3}){1,2}$/i),
+				hexToRgb: function (hex) {
+					return this.hexToRgba(hex);
+				},
+				hexToRgba: function (hex, a) {
+					if (!hex) {
+						console.assert(false, {
+							message: "invalid argument: <hex> cannot be null, empty, or undefined.",
+							input: hex
+						});
+
+						return;
+					}
+
+					if (!hex.toString().match(this.hexPattern)) {
+						console.assert(false, {
+							message: "syntax error: <hex> does not match the string pattern.",
+							input: hex,
+							pattern: this.hexPattern
+						});
+
+						return;
+					}
+
+					hex = hex.toString().substr(1);
+
+					if (hex.length === 3) {
+						let rr = hex[0].repeat(2);
+						let gg = hex[1].repeat(2);
+						let bb = hex[2].repeat(2);
+
+						hex = rr.concat(gg).concat(bb);
+					}
+
+					let prefix = "rgb";
+					let dec = parseInt(hex, 16);
+					let color = [];
+
+					color.push((dec >> 16) & 255);
+					color.push((dec >> 8) & 255);
+					color.push(dec & 255);
+
+					if (typeof a !== "undefined") {
+						color.push(a);
+						prefix = prefix.concat('a');
+					}
+
+					return prefix + "(" + color.join(", ") + ")";
+				}
+			};
+
+			var Path = {
+				backslashPattern: new RegExp(/\\/g),
+				combine: function (lhs, rhs) {
+					lhs = lhs.toString().replace(this.backslashPattern, '/');
+					rhs = rhs.toString().replace(this.backslashPattern, '/');
+
+					if (lhs.endsWith('/') && rhs.startsWith('/')) {
+						return lhs + rhs.substr(1);
+					}
+					else if (!lhs.endsWith('/') && !rhs.startsWith('/')) {
+						return lhs + '/' + rhs;
+					}
+					else {
+						return lhs + rhs;
+					}
+				}
+			};
+		}
+
+		//
+		// Application main entry point
+		//
+		{
+			document.addEventListener("DOMContentLoaded", function (e) {
+				EventPlayer.initialize();
+			});
+		}
+	</script>
+</body>
+</html>
